@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">GPSPark</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_main">MainActivity</string>
+    
+    <!-- Gps Status -->
+    <string name="gpsstatus">Gps Status = %1$s</string>
+    
+    <!-- Gps Status -->
+    <string name="address">Address = %1$s</string>
+    
+    <!-- Timestamp -->
+    <string name="timestamp">Timestamp = %1$02d : %2$02d (%3$02d)</string>
+    
+    <!-- Latitude -->
+    <string name="latitude">Latitude = %1$.8f</string>
+    
+    <!-- Longitude -->
+    <string name="longitude">Longitude = %1$.8f</string>
+    
+    <!-- Altitude -->
+    <string name="altitude">Altitude = %1$.1f</string>
+    
+    <!-- Nmea -->
+    <string name="nmea">Nmea = %1$s</string>
+    
+    <!-- Nmea GNS -->
+    <string name="nmea_gns">GNS = %1$s</string>
+    
+    <!-- Nmea GPGGA -->
+    <string name="nmea_gga">GGA = %1$s</string>
+    
+    <!-- Nmea GSA -->
+    <string name="nmea_gsa">GSA = %1$s</string>
+    
+    <!-- Nmea GSV -->
+    <string name="nmea_gsv">GSV = %1$s</string>
+    
+    <!-- Nmea GPRMC -->
+    <string name="nmea_rmc">RMC = %1$s</string>
+    
+    <!-- Nmea GPGST -->
+    <string name="nmea_gst">GST = %1$s</string>
+
+</resources>
