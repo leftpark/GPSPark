@@ -44,5 +44,8 @@
     
     <!-- Nmea GPGST -->
     <string name="nmea_gst">GST = %1$s</string>
+    
+    <!-- Set to Maps -->
+    <string name="setToMaps">Set to Maps</string>
 
 </resources>

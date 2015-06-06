@@ -1,6 +1,7 @@
 package com.leftpark.android.gpspark;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -25,6 +26,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnClickListener, OnLongClickListener{
@@ -69,6 +73,10 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 	private TextView tvNmeaRMC;		// Nmea	GPRMC
 	private TextView tvNmeaGST;		// Nmea	GPGST
 	
+	private WebView wvMaps;			// MAPS
+	
+	private Button btnSetToMaps;		// Set to Maps
+	
 	// Values
 	private String strGpsStatus;	// GpsStatu
 	private String strAddress;		// Address
@@ -82,6 +90,9 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 	private String strNmeaGSV;		// Nmea --GSV
 	private String strNmeaRMC;		// Nmea GPRMC
 	private String strNmeaGST;		// Nmea GPGST
+	
+	private static final String strGoogleMaps = "https://www.google.co.kr/maps";
+	private String strCoordinates;	// Coordinates
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -230,6 +241,18 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 		// Nmea GPGST
 		tvNmeaGST = (TextView)findViewById(R.id.tv_nmea_gst);
 		tvNmeaGST.setText(strNmeaGST);
+		
+		// Maps
+		String url = strGoogleMaps;
+		wvMaps = (WebView)findViewById(R.id.wv_maps);
+		wvMaps.getSettings().setJavaScriptEnabled(true);
+	    wvMaps.setWebViewClient(new WebViewClient());
+	    wvMaps.loadUrl(url);
+	    //wvMaps.loadUrl("https://www.google.co.kr/maps?saddr=20.344,34.34&daddr=20.5666,45.345");
+	    
+	    // Set to Maps
+	    btnSetToMaps = (Button)findViewById(R.id.btn_set_to_maps);
+	    btnSetToMaps.setOnClickListener(this);
 	}
 	
 	private void initHandler() {
@@ -288,7 +311,7 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 		return mIlm;
 	}
 */
-	
+
 	//+LocationListener
 	private LocationListener mLocationListener = new LocationListener() {
 		@Override
@@ -296,12 +319,16 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 			if (D) Log.d(TAG,"onLocationChanged()");
 			
 			if (D) Log.d(TAG,"onLocationChanged() : time = "+location.getTime());
-			Date date = new Date(location.getTime());
 			
-			if (D) Log.d(TAG,"onLocationChanged() : Hours = "+date.getHours()+", Minutes = "+date.getMinutes());
+			Calendar c = Calendar.getInstance();
+			int hours= c.get(Calendar.HOUR_OF_DAY);
+			int minutes = c.get(Calendar.MINUTE);
+			int seconds = c.get(Calendar.SECOND);
 			
 			// Timestamp
-			strTimestamp = getString(R.string.timestamp, date.getHours(), date.getMinutes(), date.getSeconds());
+			strTimestamp = getString(R.string.timestamp, hours, minutes, seconds);
+			
+			if (D) Log.d(TAG,"onLocationChanged() : Hours = "+hours+", Minutes = "+minutes+", Seconds = "+seconds);
 			
 			// Latitude
 			double latitude = location.getLatitude();
@@ -322,6 +349,9 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 			
 			strAddress = getString(R.string.address, getAddress(latitude, longitude));
 			if (D) Log.d(TAG,"onLocationChanged() : strAddress = "+strAddress);
+			
+			// ?saddr=20.344,34.34&daddr=20.5666,45.345
+			strCoordinates = "/@"+String.valueOf(latitude)+","+String.valueOf(longitude);
 			
 			onUpdateView();
 		}
@@ -446,6 +476,9 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 		
 		// Nmea GPGST
 		tvNmeaGST.setText(strNmeaGST);
+		
+		// MAP
+		//wvMaps.loadUrl(strGoogleMaps+strCoordinates);
 	}
 	
 	public String getAddress(double latitude, double longitude) {
@@ -496,6 +529,9 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 		switch (v.getId()) {
 		case R.id.tv_address:
 			if (D) Log.d(TAG,"onClick() : tv_address");
+			break;
+		case R.id.btn_set_to_maps:
+			wvMaps.loadUrl(strGoogleMaps+strCoordinates);
 			break;
 		}
 	}
