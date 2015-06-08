@@ -113,10 +113,17 @@
 	    android:layout_weight="1"
 	    android:orientation="vertical">
 	    
-	    <WebView 
+	    <!-- WebView 
 	        android:id="@+id/wv_maps"
 	        android:layout_width="match_parent"
-	        android:layout_height="match_parent"/>
+	        android:layout_height="match_parent"/-->
+	    
+	    <com.google.android.maps.MapView
+	        android:id="@+id/map_view"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:apiKey="0u7AJChI1NV8vCpj21C0Cq8YnNMrB6YMgigu0GA"
+	        android:clickable="true" />
 	    
 	</LinearLayout>
 

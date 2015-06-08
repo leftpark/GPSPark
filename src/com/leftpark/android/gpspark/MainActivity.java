@@ -2,14 +2,13 @@ package com.leftpark.android.gpspark;
 
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.GpsStatus;
@@ -30,6 +29,18 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.TextView;
+
+/**
+ * Project > Properties > Android
+ * make sure the Project Build Target you have selected is one of the Google APIs ones.
+ */
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapController;
+import com.google.android.maps.MapView;
+import com.google.android.maps.Overlay;
+import com.google.android.maps.OverlayItem;
+
+import com.leftpark.android.gpspark.util.CurrentLocationOverlay;
 
 public class MainActivity extends Activity implements OnClickListener, OnLongClickListener{
 	
@@ -73,7 +84,8 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 	private TextView tvNmeaRMC;		// Nmea	GPRMC
 	private TextView tvNmeaGST;		// Nmea	GPGST
 	
-	private WebView wvMaps;			// MAPS
+	//private WebView wvMaps;			// MAPS
+	private MapView mapView;	//com.google.android.maps
 	
 	private Button btnSetToMaps;		// Set to Maps
 	
@@ -243,12 +255,19 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 		tvNmeaGST.setText(strNmeaGST);
 		
 		// Maps
-		String url = strGoogleMaps;
-		wvMaps = (WebView)findViewById(R.id.wv_maps);
-		wvMaps.getSettings().setJavaScriptEnabled(true);
-	    wvMaps.setWebViewClient(new WebViewClient());
-	    wvMaps.loadUrl(url);
+		//String url = strGoogleMaps;
+		// R.id.wv_maps
+		//wvMaps = (WebView)findViewById();
+		//wvMaps.getSettings().setJavaScriptEnabled(true);
+	    //wvMaps.setWebViewClient(new WebViewClient());
+	    //wvMaps.loadUrl(url);
 	    //wvMaps.loadUrl("https://www.google.co.kr/maps?saddr=20.344,34.34&daddr=20.5666,45.345");
+		
+		// MapView
+		mapView = (MapView)findViewById(R.id.map_view);
+		
+		// Setting Zoom Controls on MapView
+		mapView.setBuiltInZoomControls(true);
 	    
 	    // Set to Maps
 	    btnSetToMaps = (Button)findViewById(R.id.btn_set_to_maps);
@@ -352,6 +371,7 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 			
 			// ?saddr=20.344,34.34&daddr=20.5666,45.345
 			strCoordinates = "/@"+String.valueOf(latitude)+","+String.valueOf(longitude);
+			showCurrentLocation(latitude, longitude);
 			
 			onUpdateView();
 		}
@@ -531,7 +551,7 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 			if (D) Log.d(TAG,"onClick() : tv_address");
 			break;
 		case R.id.btn_set_to_maps:
-			wvMaps.loadUrl(strGoogleMaps+strCoordinates);
+			//wvMaps.loadUrl(strGoogleMaps+strCoordinates);
 			break;
 		}
 	}
@@ -547,5 +567,42 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 			return true;
 		}
 		return false;
+	}
+	
+	// show curruent location in Google Maps with gps coordinates
+	private void showCurrentLocation(double latitude, double longitude) {
+		
+		// Creating an instance of GeoPoint corresponding  to latitude and longitude
+		GeoPoint point = new GeoPoint((int)(latitude * 1E6), (int)(longitude * 1E6));
+		
+		// Getting MapController
+		MapController mapController = mapView.getController();
+		
+		// Applying a zoom
+		mapController.setZoom(15);
+		
+		// Redraw the map
+		mapView.invalidate();
+		
+		// Getting list of overlays available in the map
+		List<Overlay> mapOverlays = mapView.getOverlays();
+		
+		// Creating a drawable object to represent the image of mark in the map
+		Drawable drawable = this.getResources().getDrawable(R.drawable.cur_position);
+		
+		// Creating an instance of ItemizedOverlay to mark the current location in the map
+		CurrentLocationOverlay currentLocationOverlay = new CurrentLocationOverlay(drawable);
+		
+		// Creating an item to represent a mark in the overlay
+		OverlayItem currentLocation = new OverlayItem(point, "Current Location", "Latitude:" + latitude + ", Longitude:" + longitude);
+		
+		// Adding the mark to the overlay
+		currentLocationOverlay.addOverlay(currentLocation);
+		
+		// Current Existing overlays in the map
+		mapOverlays.clear();
+		
+		// Adding new overlay to map Overlay
+		mapOverlays.add(currentLocationOverlay);
 	}
 }
