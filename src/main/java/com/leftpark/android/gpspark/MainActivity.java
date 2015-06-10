@@ -35,6 +35,7 @@ import android.widget.TextView;
  * make sure the Project Build Target you have selected is one of the Google APIs ones.
  */
 import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
@@ -42,7 +43,7 @@ import com.google.android.maps.OverlayItem;
 
 import com.leftpark.android.gpspark.util.CurrentLocationOverlay;
 
-public class MainActivity extends Activity implements OnClickListener, OnLongClickListener{
+public class MainActivity extends MapActivity implements OnClickListener, OnLongClickListener{
 	
 	private static final String TAG = "MainActivity";
 	private static final boolean D = true;
@@ -123,7 +124,12 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 		// initialize GPS
 		initGPS();
 	}
-	
+
+	@Override
+	protected boolean isRouteDisplayed() {
+		return false;
+	}
+
 	private void initValue() {
 		if (D) Log.d(TAG,"initValue()");
 		
